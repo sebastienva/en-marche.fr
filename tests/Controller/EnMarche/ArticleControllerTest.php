@@ -19,7 +19,7 @@ class ArticleControllerTest extends SqliteWebTestCase
 
     public function testArticlePublished()
     {
-        $crawler = $this->client->request(Request::METHOD_GET, '/article/outre-mer');
+        $crawler = $this->client->request(Request::METHOD_GET, '/articles/outre-mer');
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $response = $this->client->getResponse());
         $this->assertSame(1, $crawler->filter('html:contains("An exhibit of Markdown")')->count());
@@ -28,7 +28,7 @@ class ArticleControllerTest extends SqliteWebTestCase
 
     public function testArticleWithoutImage()
     {
-        $crawler = $this->client->request(Request::METHOD_GET, '/article/sans-image');
+        $crawler = $this->client->request(Request::METHOD_GET, '/articles/sans-image');
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $response = $this->client->getResponse());
         $this->assertSame(1, $crawler->filter('html:contains("An exhibit of Markdown")')->count());
@@ -37,7 +37,7 @@ class ArticleControllerTest extends SqliteWebTestCase
 
     public function testArticleDraft()
     {
-        $this->client->request(Request::METHOD_GET, '/article/brouillon');
+        $this->client->request(Request::METHOD_GET, '/articles/brouillon');
         $this->assertResponseStatusCode(Response::HTTP_NOT_FOUND, $this->client->getResponse());
     }
 
