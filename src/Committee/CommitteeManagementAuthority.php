@@ -6,6 +6,7 @@ use AppBundle\Entity\Adherent;
 use AppBundle\Entity\Committee;
 use AppBundle\Mailjet\MailjetService;
 use AppBundle\Mailjet\Message\CommitteeApprovalConfirmationMessage;
+use AppBundle\Mailjet\Message\CommitteeApprovalReferentMessage;
 use AppBundle\Mailjet\Message\CommitteeNewFollowerMessage;
 
 class CommitteeManagementAuthority
@@ -28,11 +29,26 @@ class CommitteeManagementAuthority
     {
         $this->manager->approveCommittee($committee);
 
+        $animator = $this->manager->getCommitteeCreator($committee);
+
         $this->mailjet->sendMessage(CommitteeApprovalConfirmationMessage::create(
-            $this->manager->getCommitteeCreator($committee),
+            $animator,
             $committee->getCityName(),
             $this->urlGenerator->getUrl('app_committee_show', $committee)
         ));
+
+        if ($referent = $this->manager->getCommitteeReferent($committee)) {
+            $this->mailjet->sendMessage(CommitteeApprovalReferentMessage::create(
+                $referent,
+                $animator,
+                $committee,
+                $this->urlGenerator->generate('app_adherent_contact', [
+                    'uuid' => (string) $animator->getUuid(),
+                    'from' => 'committee',
+                    'id' => (string) $committee->getUuid(),
+                ])
+            ));
+        }
     }
 
     public function preApprove(Committee $committee)

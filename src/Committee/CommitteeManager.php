@@ -152,6 +152,11 @@ class CommitteeManager
         return $this->getCommitteeHosts($committee)->first();
     }
 
+    public function getCommitteeReferent(Committee $committee): ?Adherent
+    {
+        return $this->getAdherentRepository()->findReferentByCommittee($committee);
+    }
+
     public function getCommitteeFollowers(Committee $committee, bool $withHosts = self::INCLUDE_HOSTS): AdherentCollection
     {
         return $this->getMembershipRepository()->findFollowers($committee->getUuid(), $withHosts);

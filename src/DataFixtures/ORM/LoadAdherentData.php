@@ -42,6 +42,7 @@ class LoadAdherentData extends AbstractFixture implements FixtureInterface, Cont
     const COMMITTEE_8_UUID = '93b72179-7d27-40c4-948c-5188aaf264b6';
     const COMMITTEE_9_UUID = '62ea97e7-6662-427b-b90a-23429136d0dd';
     const COMMITTEE_10_UUID = '79638242-5101-11e7-b114-b2f933d5fe66';
+    const COMMITTEE_11_UUID = '56d8e024-bbf8-443a-a8a7-f63430734787';
 
     use ContainerAwareTrait;
 
@@ -172,7 +173,7 @@ class LoadAdherentData extends AbstractFixture implements FixtureInterface, Cont
             'phone' => '33 673654349',
             'registered_at' => '2017-01-25 19:31:45',
         ]);
-        $referent->setReferent(['CH', '92', '77000'], -1.6743, 48.112);
+        $referent->setReferent(['CH', '92', '77', '75008', '2B'], -1.6743, 48.112);
         $referent->enableCommitteesNotifications();
 
         $coordinateur = $adherentFactory->createFromArray([
@@ -425,6 +426,16 @@ class LoadAdherentData extends AbstractFixture implements FixtureInterface, Cont
         ]);
         $committee10->approved('2017-05-09 13:17:42');
 
+        $committee11 = $committeeFactory->createFromArray([
+            'uuid' => self::COMMITTEE_11_UUID,
+            'created_by' => (string) $referent->getUuid(),
+            'created_at' => '2017-05-09 13:24:32',
+            'name' => 'En Marche - Corse',
+            'description' => 'En Marche pour la Corse.',
+            'address' => PostAddress::createFrenchAddress('Rond-Point Nogues', '20200-2B033', 42.7022742, 9.4498157),
+            'phone' => '33 673655359',
+        ]);
+
         // Make an adherent request a new password
         $resetPasswordToken = AdherentResetPasswordToken::generate($adherent1);
 
@@ -473,6 +484,7 @@ class LoadAdherentData extends AbstractFixture implements FixtureInterface, Cont
         $manager->persist($committee8);
         $manager->persist($committee9);
         $manager->persist($committee10);
+        $manager->persist($committee11);
 
         // Make adherents join committees
         $manager->persist($adherent3->superviseCommittee($committee1, '2017-01-12 13:25:54'));
@@ -499,6 +511,7 @@ class LoadAdherentData extends AbstractFixture implements FixtureInterface, Cont
         $manager->persist($referent->superviseCommittee($committee10));
         $manager->persist($adherent13->followCommittee($committee10));
         $manager->persist($adherent14->followCommittee($committee10));
+        $manager->persist($adherent3->hostCommittee(($committee11)));
 
         $manager->flush();
     }
