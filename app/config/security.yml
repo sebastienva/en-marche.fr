@@ -129,6 +129,9 @@ security:
             - ROLE_APP_ADMIN_MAILJET_EMAIL_LIST
             - ROLE_APP_ADMIN_MAILJET_EMAIL_VIEW
 
+        ROLE_ADMIN_ADHERENT_TAGS:
+            - ROLE_APP_ADMIN_ADHERENT_TAG_ALL
+
         ROLE_SUPER_ADMIN:
             - ROLE_ADMIN_DASHBOARD
             - ROLE_ADMIN_MEDIAS
@@ -152,6 +155,7 @@ security:
             - ROLE_ADMIN_PROCURATIONS
             - ROLE_ADMIN_DONATIONS
             - ROLE_ADMIN_MAILJET
+            - ROLE_ADMIN_ADHERENT_TAGS
             - ROLE_APP_ADMIN_PAGE_CREATE
 
     access_decision_manager:
