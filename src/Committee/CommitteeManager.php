@@ -252,6 +252,9 @@ class CommitteeManager
     {
         $committee->approved();
 
+        $creator = $this->getAdherentRepository()->findOneByUuid($committee->getCreatedBy());
+        $this->changePrivilege($creator, $committee, CommitteeMembership::COMMITTEE_SUPERVISOR, false);
+
         if ($flush) {
             $this->getManager()->flush();
         }
@@ -273,7 +276,7 @@ class CommitteeManager
     }
 
     /**
-     * Refuses one committee.
+     * Refuses one committee. Transform supervisor and host to members and store their privileges
      *
      * @param Committee $committee
      * @param bool      $flush
@@ -281,6 +284,9 @@ class CommitteeManager
     public function refuseCommittee(Committee $committee, bool $flush = true): void
     {
         $committee->refused();
+
+        $creator = $this->getAdherentRepository()->findOneByUuid($committee->getCreatedBy());
+        $this->changePrivilege($creator, $committee, CommitteeMembership::COMMITTEE_FOLLOWER, false);
 
         if ($flush) {
             $this->getManager()->flush();
@@ -403,7 +409,7 @@ class CommitteeManager
         return $this->getCommitteeRepository()->countApprovedCommittees();
     }
 
-    public function changePrivilege(Adherent $adherent, Committee $committee, string $privilege): void
+    public function changePrivilege(Adherent $adherent, Committee $committee, string $privilege, bool $flush = true): void
     {
         CommitteeMembership::checkPrivilege($privilege);
 
@@ -418,7 +424,9 @@ class CommitteeManager
 
         $committeeMembership->setPrivilege($privilege);
 
-        $this->getManager()->flush();
+        if ($flush) {
+            $this->getManager()->flush();
+        }
     }
 
     public function getCoordinatorCommittees(Adherent $coordinator, CommitteeFilters &$filters): array

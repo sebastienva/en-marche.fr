@@ -26,7 +26,7 @@ class CommitteeManagementAuthority
 
     public function approve(Committee $committee)
     {
-        $this->manager->approveCommittee($committee);
+        $this->manager->approveCommittee($committee, false);
 
         $this->mailjet->sendMessage(CommitteeApprovalConfirmationMessage::create(
             $this->manager->getCommitteeCreator($committee),
